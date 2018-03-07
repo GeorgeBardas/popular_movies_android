@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Popular Movies</string>
-    <string name="popular_link">https://api.themoviedb.org/3/movie/popular?api_key=7ec5bdc1c66ad738d9920a6df87170d6&amp;language=en-US&amp;page=1</string>
-    <string name="rated_link">https://api.themoviedb.org/3/movie/top_rated?api_key=7ec5bdc1c66ad738d9920a6df87170d6&amp;language=en-US&amp;page=1</string>
-    <string name="base_path_small_poster">https://image.tmdb.org/t/p/w200</string>
-    <string name="link_movie_details">https://api.themoviedb.org/3/movie/</string>
-    <string name="end_movie_details">api_key=7ec5bdc1c66ad738d9920a6df87170d6&amp;language=en-US</string>
-    <string name="error_network">There is no internet connection!</string>
-</resources>
