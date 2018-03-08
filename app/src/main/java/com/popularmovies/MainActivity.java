@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -30,12 +32,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
     public static Context context;
     List<Movie> movieList = new ArrayList<>();
-    ListView listView;
+    RecyclerView recyclerView;
     MovieAdapter movieAdapter;
+
+    @BindString(R.string.popular_link) String popularURL;
+    @BindString(R.string.rated_link) String ratedURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +53,14 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
 
-        listView = findViewById(R.id.listView);
-        movieAdapter = new MovieAdapter(context, R.layout.view_item_movie, movieList);
-        listView.setAdapter(movieAdapter);
+        recyclerView = findViewById(R.id.recyclerView);
+        movieAdapter = new MovieAdapter(movieList, R.layout.view_item_movie, context);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        recyclerView.setAdapter(movieAdapter);
 
-        displayByPopularity();
+        displayMovies(popularURL);
     }
 
     @Override
@@ -62,25 +73,26 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.popular:
-                displayByPopularity();
+                displayMovies(popularURL);
                 break;
 
             case R.id.rating:
-                displayByRating();
+                displayMovies(ratedURL);
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    void displayByPopularity(){
+    void displayMovies(String url){
         if (isNetworkAvailable()){
             movieList.clear();
             movieAdapter.notifyDataSetChanged();
+
             RequestQueue requestQueue = Volley.newRequestQueue(context);
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                    (Request.Method.GET, getString(R.string.popular_link), null, new Response.Listener<JSONObject>() {
+                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
@@ -88,42 +100,6 @@ public class MainActivity extends AppCompatActivity {
                                 for (int i = 1; i < 20; i++) {
                                     Movie movie = new Movie();
                                     movie.setId(movies.getJSONObject(i).optInt("id"));
-                                    movie.setTitle(movies.getJSONObject(i).optString("title"));
-                                    movie.setImage_link(movies.getJSONObject(i).optString("poster_path"));
-                                    movieList.add(movie);
-                                    movieAdapter.notifyDataSetChanged();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d("OBJECT", error.toString());
-                        }
-                    });
-            requestQueue.add(jsonObjectRequest);
-        }
-        else
-            Toast.makeText(context, getString(R.string.error_network), Toast.LENGTH_SHORT).show();
-    }
-
-    void displayByRating(){
-        if (isNetworkAvailable()){
-            movieList.clear();
-            movieAdapter.notifyDataSetChanged();
-
-            RequestQueue requestQueue = Volley.newRequestQueue(context);
-
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                    (Request.Method.GET, getString(R.string.rated_link), null, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                JSONArray movies = response.getJSONArray("results");
-                                for (int i = 1; i < 20; i++) {
-                                    Movie movie = new Movie();
                                     movie.setTitle(movies.getJSONObject(i).optString("title"));
                                     movie.setImage_link(movies.getJSONObject(i).optString("poster_path"));
                                     movieList.add(movie);

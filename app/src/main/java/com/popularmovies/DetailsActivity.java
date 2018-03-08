@@ -40,6 +40,7 @@ public class DetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         int position = getIntent().getIntExtra("id", 0);
