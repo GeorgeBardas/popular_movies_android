@@ -1,10 +1,12 @@
 package com.popularmovies;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +26,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.popularmovies.Utilities.Movie;
 import com.popularmovies.Utilities.MovieAdapter;
+import com.popularmovies.Utilities.MovieDao;
+import com.popularmovies.Utilities.MoviesDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         movieAdapter = new MovieAdapter(movieList, R.layout.view_item_movie, context);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(movieAdapter);
 
         displayMovies(popularURL);
@@ -78,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.rating:
                 displayMovies(ratedURL);
+                break;
+
+            case R.id.favorite:
+                Toast.makeText(context, MoviesDatabase.getAppDatabase(context).movieDao().getAllSavedMovies().get(0).getImage_link() + "", Toast.LENGTH_SHORT).show();
+                displayFavoriteMovies();
                 break;
         }
 
@@ -119,6 +129,12 @@ public class MainActivity extends AppCompatActivity {
         }
         else
             Toast.makeText(context, getString(R.string.error_network), Toast.LENGTH_SHORT).show();
+    }
+
+    void displayFavoriteMovies(){
+        movieList.clear();
+        movieList.addAll(MoviesDatabase.getAppDatabase(context).movieDao().getAllSavedMovies());
+        movieAdapter.notifyDataSetChanged();
     }
 
     boolean isNetworkAvailable() {
