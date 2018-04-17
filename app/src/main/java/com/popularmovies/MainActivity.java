@@ -1,9 +1,12 @@
 package com.popularmovies;
 
 import android.arch.persistence.room.Room;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -27,12 +30,15 @@ import com.android.volley.toolbox.Volley;
 import com.popularmovies.Utilities.Movie;
 import com.popularmovies.Utilities.MovieAdapter;
 import com.popularmovies.Utilities.MovieDao;
+import com.popularmovies.Utilities.MovieDatabaseContentProvider;
+import com.popularmovies.Utilities.MovieTable;
 import com.popularmovies.Utilities.MoviesDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +72,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(movieAdapter);
 
         displayMovies(popularURL);
+
+
+        Uri uri = Uri.parse("content://" + "com.popularmovies/movies");
+        ContentValues values = new ContentValues();
+        values.put("title", "film smekeeer");
+        values.put("overview", "a");
+        values.put("rating", 10);
+        values.put("image", "a");
+        values.put("release", "a");
+        getContentResolver().insert(uri, values);
+        Toast.makeText(context, String.valueOf(getContentResolver().query(uri, null, null, null, null).getCount()), Toast.LENGTH_SHORT).show();
     }
 
     @Override
