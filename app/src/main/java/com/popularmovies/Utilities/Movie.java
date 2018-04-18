@@ -4,6 +4,9 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.widget.Toast;
 
 @Entity
 public class Movie {
@@ -86,5 +89,25 @@ public class Movie {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public ContentValues getContentValues(){
+        ContentValues values = new ContentValues();
+        values.put("title", getTitle());
+        values.put("image", getImage_link());
+        values.put("overview", getOverview());
+        values.put("rating", getRating());
+        values.put("release", getReleaseDate());
+        return values;
+    }
+
+    public Movie getMovieFromCursor(Cursor cursor){
+        Movie movie = new Movie();
+        movie.setTitle(cursor.getString(cursor.getColumnIndex(MovieTable.COLUMN_TITLE)));
+        movie.setRating(cursor.getString(cursor.getColumnIndex(MovieTable.COLUMN_RATING)));
+        movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(MovieTable.COLUMN_RELEASE)));
+        movie.setOverview(cursor.getString(cursor.getColumnIndex(MovieTable.COLUMN_OVERVIEW)));
+        movie.setImage_link(cursor.getString(cursor.getColumnIndex(MovieTable.COLUMN_IMAGE)));
+        return movie;
     }
 }

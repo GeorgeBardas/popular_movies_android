@@ -3,6 +3,7 @@ package com.popularmovies;
 import android.arch.persistence.room.Room;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -81,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
         values.put("rating", 10);
         values.put("image", "a");
         values.put("release", "a");
-        getContentResolver().insert(uri, values);
-        Toast.makeText(context, String.valueOf(getContentResolver().query(uri, null, null, null, null).getCount()), Toast.LENGTH_SHORT).show();
+        //getContentResolver().insert(uri, values);
+        Toast.makeText(context, String.valueOf(getContentResolver().query(uri, null, null, null, null)), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -103,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.favorite:
-                Toast.makeText(context, MoviesDatabase.getAppDatabase(context).movieDao().getAllSavedMovies().get(0).getImage_link() + "", Toast.LENGTH_SHORT).show();
                 displayFavoriteMovies();
                 break;
         }
@@ -150,7 +150,10 @@ public class MainActivity extends AppCompatActivity {
 
     void displayFavoriteMovies(){
         movieList.clear();
-        movieList.addAll(MoviesDatabase.getAppDatabase(context).movieDao().getAllSavedMovies());
+        //movieList.addAll(MoviesDatabase.getAppDatabase(context).movieDao().getAllSavedMovies());
+        Cursor cursor = getContentResolver().query(DetailsActivity.uri, null, null, null, null);
+        while (cursor.moveToNext())
+            movieList.add(new Movie().getMovieFromCursor(cursor));
         movieAdapter.notifyDataSetChanged();
     }
 

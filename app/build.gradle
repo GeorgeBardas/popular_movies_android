@@ -52,4 +52,6 @@ dependencies {
 
     // Test helpers for Room
     testImplementation "android.arch.persistence.room:testing:1.0.0"
+
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
 }

@@ -22,7 +22,8 @@ public class MovieDatabaseContentProvider extends ContentProvider {
 
     private static final int MOVIE = 10;
     private static final int MOVIE_ID = 20;
-    private static final String BASE_PATH = "movie";
+    public static final String BASE_PATH = "content://";
+    public static final String PACKAGE = "com.popularmovies";
 
     private static final UriMatcher sURIMathcer = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -37,7 +38,6 @@ public class MovieDatabaseContentProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        checkColumns(projection);
         queryBuilder.setTables(MovieTable.TABLE_MOVIE);
         int uriType = sURIMathcer.match(uri);
         switch (uriType){
@@ -60,31 +60,10 @@ public class MovieDatabaseContentProvider extends ContentProvider {
         SQLiteDatabase db = database.getWritableDatabase();
         int match =  sURIMathcer.match(uri);
         long id = 0;
-        switch (match){
-            case MOVIE:
-                id = db.insert(MovieTable.TABLE_MOVIE, null, contentValues);
-                break;
-        }
-        //Toast.makeText(getContext(), id + "", Toast.LENGTH_SHORT).show();
+        id = db.insert(MovieTable.TABLE_MOVIE, null, contentValues);
         uri = ContentUris.withAppendedId(uri, id);
         getContext().getContentResolver().notifyChange(uri, null);
         return uri;
-    }
-
-    private void checkColumns(String[] protection){
-        String[] available = {MovieTable.COLUMN_TITLE,
-        MovieTable.COLUMN_IMAGE,
-        MovieTable.COLUMN_OVERVIEW,
-        MovieTable.COLUMN_RATING,
-        MovieTable.COLUMN_RELEASE,
-        MovieTable.COLUMN_ID };
-
-        if (protection != null){
-            HashSet<String> reqeust = new HashSet<>(Arrays.asList(protection));
-            HashSet<String> availableColumns = new HashSet<>(Arrays.asList(available));
-            if (!availableColumns.containsAll(reqeust))
-                throw new IllegalArgumentException("Unknown columns");
-        }
     }
 
     @Override
@@ -94,6 +73,9 @@ public class MovieDatabaseContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+        SQLiteDatabase db = database.getWritableDatabase();
+        db.delete(MovieTable.TABLE_MOVIE, s, strings);
+        getContext().getContentResolver().notifyChange(uri, null);
         return 0;
     }
 

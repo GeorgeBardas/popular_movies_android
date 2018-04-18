@@ -23,7 +23,7 @@
             android:parentActivityName=".MainActivity"></activity>
         <provider
             android:authorities="com.popularmovies"
-            android:name=".Utilities.MovieDatabaseContentProvider"/>
+            android:name=".Utilities.MovieDatabaseContentProvider" />
     </application>
 
 </manifest>

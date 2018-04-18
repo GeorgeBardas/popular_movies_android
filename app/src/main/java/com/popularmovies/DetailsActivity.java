@@ -1,5 +1,8 @@
 package com.popularmovies;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +22,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.popularmovies.Utilities.Movie;
+import com.popularmovies.Utilities.MovieDatabaseContentProvider;
+import com.popularmovies.Utilities.MovieDatabaseHelper;
+import com.popularmovies.Utilities.MovieTable;
 import com.popularmovies.Utilities.MoviesDatabase;
 import com.popularmovies.Utilities.Trailer;
 import com.popularmovies.Utilities.TrailerAdapter;
@@ -41,6 +47,7 @@ public class DetailsActivity extends AppCompatActivity {
     Movie movie;
     List<Trailer> listTrailers = new ArrayList<>();
     List<String> reviews = new ArrayList<>();
+    public static Uri uri = Uri.parse(MovieDatabaseContentProvider.BASE_PATH + MovieDatabaseContentProvider.PACKAGE + "/" + MovieTable.TABLE_MOVIE);
 
     @BindView(R.id.trailers_list_view) ListView trailersListView;
     @BindView(R.id.reviews_list_view) ListView reviewsListView;
@@ -50,6 +57,15 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.movie_rating) TextView movieRating;
     @BindView(R.id.movie_plot) TextView moviePlot;
     @BindView(R.id.favorite_button) Button favorite;
+
+    public boolean isUnique(){
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        while (cursor.moveToNext())
+            if (cursor.getString(cursor.getColumnIndex("title")).equals(movie.getTitle()))
+                return false;
+        cursor.close();
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +96,9 @@ public class DetailsActivity extends AppCompatActivity {
                         movie.setId(response.optInt("id"));
                         movie.setTitle(response.optString("title"));
                         movie.setImage_link(response.optString("poster_path"));
+                        movie.setOverview(response.optString("overview"));
+                        movie.setReleaseDate(response.optString("release_date"));
+                        movie.setRating(String.valueOf(response.optDouble("vote_average")));
                         toolbar.setTitle(response.optString("title"));
                         Picasso.with(getApplicationContext()).load(getString(R.string.base_path_small_poster) + response.optString("poster_path")).error(R.drawable.ic_android).into(movieImage);
                         movieTitle.setText(response.optString("title"));
@@ -143,15 +162,17 @@ public class DetailsActivity extends AppCompatActivity {
             favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MoviesDatabase.getAppDatabase(context).movieDao().getMovie(movie.getTitle()) == null) {
-                    MoviesDatabase.getAppDatabase(context).movieDao().saveMovie(movie);
-                    Toast.makeText(DetailsActivity.this, MoviesDatabase.getAppDatabase(context).movieDao().getMovie(movie.getTitle()).getTitle() + " aded to favorites", Toast.LENGTH_SHORT).show();
+                if (isUnique()) {
+                    getContentResolver().insert(uri, movie.getContentValues());
+                    Toast.makeText(DetailsActivity.this, movie.getTitle() + " aded to favorites", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    MoviesDatabase.getAppDatabase(context).movieDao().deleteMovie(movie.getTitle());
+                    getContentResolver().delete(uri, MovieTable.COLUMN_TITLE + "= ?", new String[] {movie.getTitle()});
                     Toast.makeText(DetailsActivity.this, "Deleted from favorites", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
+
     }
 }

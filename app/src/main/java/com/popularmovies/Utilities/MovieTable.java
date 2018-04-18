@@ -19,7 +19,7 @@ public class MovieTable {
             + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_TITLE + " text not null, "
             + COLUMN_IMAGE + " text not null, "
-            + COLUMN_OVERVIEW + " text not null, "
+            + COLUMN_OVERVIEW + " blob not null, "
             + COLUMN_RATING + " float not null, "
             + COLUMN_RELEASE + " text not null"
             + ");";
