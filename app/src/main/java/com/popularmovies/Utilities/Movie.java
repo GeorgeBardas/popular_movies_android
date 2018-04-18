@@ -1,14 +1,9 @@
 package com.popularmovies.Utilities;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.widget.Toast;
 
-@Entity
 public class Movie {
 
     int idDB;
