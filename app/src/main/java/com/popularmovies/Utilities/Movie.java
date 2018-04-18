@@ -11,19 +11,12 @@ import android.widget.Toast;
 @Entity
 public class Movie {
 
-    @PrimaryKey(autoGenerate = true)
     int idDB;
-    @ColumnInfo(name = "id")
     int id;
-    @ColumnInfo(name = "title")
     String title;
-    @ColumnInfo(name = "image_link")
     String image_link;
-    @ColumnInfo(name = "overview")
     String overview;
-    @ColumnInfo(name = "rating")
     String rating;
-    @ColumnInfo(name = "releaseDate")
     String releaseDate;
 
     public Movie() {

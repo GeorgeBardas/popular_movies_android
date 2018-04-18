@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
-    <!ENTITY apikey "">
+    <!ENTITY apikey "7ec5bdc1c66ad738d9920a6df87170d6">
     ]>
 <resources>
     <string name="app_name">Popular Movies</string>

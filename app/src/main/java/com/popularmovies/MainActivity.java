@@ -1,24 +1,19 @@
 package com.popularmovies;
 
-import android.arch.persistence.room.Room;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 
@@ -30,21 +25,15 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.popularmovies.Utilities.Movie;
 import com.popularmovies.Utilities.MovieAdapter;
-import com.popularmovies.Utilities.MovieDao;
-import com.popularmovies.Utilities.MovieDatabaseContentProvider;
-import com.popularmovies.Utilities.MovieTable;
-import com.popularmovies.Utilities.MoviesDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
@@ -150,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
 
     void displayFavoriteMovies(){
         movieList.clear();
-        //movieList.addAll(MoviesDatabase.getAppDatabase(context).movieDao().getAllSavedMovies());
         Cursor cursor = getContentResolver().query(DetailsActivity.uri, null, null, null, null);
         while (cursor.moveToNext())
             movieList.add(new Movie().getMovieFromCursor(cursor));

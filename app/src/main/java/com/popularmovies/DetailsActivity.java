@@ -25,7 +25,6 @@ import com.popularmovies.Utilities.Movie;
 import com.popularmovies.Utilities.MovieDatabaseContentProvider;
 import com.popularmovies.Utilities.MovieDatabaseHelper;
 import com.popularmovies.Utilities.MovieTable;
-import com.popularmovies.Utilities.MoviesDatabase;
 import com.popularmovies.Utilities.Trailer;
 import com.popularmovies.Utilities.TrailerAdapter;
 import com.squareup.picasso.Picasso;
