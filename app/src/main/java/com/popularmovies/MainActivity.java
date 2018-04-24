@@ -6,9 +6,11 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.popularmovies.Utilities.Data;
 import com.popularmovies.Utilities.Movie;
 import com.popularmovies.Utilities.MovieAdapter;
 
@@ -42,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     List<Movie> movieList = new ArrayList<>();
     RecyclerView recyclerView;
     MovieAdapter movieAdapter;
+    GridLayoutManager layoutManager;
+    Parcelable state;
+    boolean savedInstace = false;
+    Data utility = Data.getInstance();
 
     @BindString(R.string.popular_link) String popularURL;
     @BindString(R.string.rated_link) String ratedURL;
@@ -57,22 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         movieAdapter = new MovieAdapter(movieList, R.layout.view_item_movie, context);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(movieAdapter);
 
+        if (savedInstanceState != null) onRestoreInstanceState(savedInstanceState);
         displayMovies(popularURL);
-
-
-        Uri uri = Uri.parse("content://" + "com.popularmovies/movies");
-        ContentValues values = new ContentValues();
-        values.put("title", "film smekeeer");
-        values.put("overview", "a");
-        values.put("rating", 10);
-        values.put("image", "a");
-        values.put("release", "a");
-        //getContentResolver().insert(uri, values);
-        Toast.makeText(context, String.valueOf(getContentResolver().query(uri, null, null, null, null)), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -101,9 +98,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void displayMovies(String url){
-        if (isNetworkAvailable()){
+        if (isNetworkAvailable() && movieList.isEmpty()){
             movieList.clear();
-            movieAdapter.notifyDataSetChanged();
 
             RequestQueue requestQueue = Volley.newRequestQueue(context);
 
@@ -133,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     });
             requestQueue.add(jsonObjectRequest);
         }
-        else
+        else if (!isNetworkAvailable())
             Toast.makeText(context, getString(R.string.error_network), Toast.LENGTH_SHORT).show();
     }
 
@@ -150,5 +146,22 @@ public class MainActivity extends AppCompatActivity {
                 = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        utility.setMoviesList(movieList);
+        outState.putInt("LIST_STATE", layoutManager.findFirstVisibleItemPosition());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Toast.makeText(context, movieList.size() + "movies", Toast.LENGTH_SHORT).show();
+        movieList.clear();
+        movieList.addAll(utility.getMoviesList());
+        movieAdapter.notifyDataSetChanged();
+        recyclerView.scrollToPosition(savedInstanceState.getInt("LIST_STATE"));
     }
 }
