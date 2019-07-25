@@ -1,4 +1,4 @@
-package com.popularmovies.Utilities;
+package com.popularmovies.Utilities.DB;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

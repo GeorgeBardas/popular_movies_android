@@ -1,4 +1,4 @@
-package com.popularmovies.Utilities;
+package com.popularmovies.Utilities.Objects;
 
 public class Trailer {
 

@@ -1,4 +1,4 @@
-package com.popularmovies.Utilities;
+package com.popularmovies.Utilities.DB;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -8,13 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.os.CancellationSignal;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
-
-import java.util.Arrays;
-import java.util.HashSet;
 
 public class MovieDatabaseContentProvider extends ContentProvider {
 

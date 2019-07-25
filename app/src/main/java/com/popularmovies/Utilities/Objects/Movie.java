@@ -1,8 +1,9 @@
-package com.popularmovies.Utilities;
+package com.popularmovies.Utilities.Objects;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.widget.Toast;
+
+import com.popularmovies.Utilities.DB.MovieTable;
 
 public class Movie {
 
@@ -13,6 +14,8 @@ public class Movie {
     String overview;
     String rating;
     String releaseDate;
+    String genre;
+    int runtime;
 
     public Movie() {
         super();
@@ -22,13 +25,15 @@ public class Movie {
         this.title = title;
     }
 
-    public Movie(int id, String title, String image_link, String overview, String rating, String releaseDate) {
+    public Movie(int id, String title, String image_link, String overview, String rating, String releaseDate, String genre, int runtime) {
         this.id = id;
         this.title = title;
         this.image_link = image_link;
         this.overview = overview;
         this.rating = rating;
         this.releaseDate = releaseDate;
+        this.genre = genre;
+        this.runtime = runtime;
     }
 
     public String getTitle() {
@@ -79,6 +84,22 @@ public class Movie {
         this.id = id;
     }
 
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
+    }
+
     public ContentValues getContentValues(){
         ContentValues values = new ContentValues();
         values.put("title", getTitle());
@@ -96,6 +117,7 @@ public class Movie {
         movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(MovieTable.COLUMN_RELEASE)));
         movie.setOverview(cursor.getString(cursor.getColumnIndex(MovieTable.COLUMN_OVERVIEW)));
         movie.setImage_link(cursor.getString(cursor.getColumnIndex(MovieTable.COLUMN_IMAGE)));
+        movie.setGenre(movie.title);
         return movie;
     }
 }

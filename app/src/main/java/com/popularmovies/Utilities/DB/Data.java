@@ -1,4 +1,6 @@
-package com.popularmovies.Utilities;
+package com.popularmovies.Utilities.DB;
+
+import com.popularmovies.Utilities.Objects.Movie;
 
 import java.util.ArrayList;
 import java.util.List;

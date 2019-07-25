@@ -1,4 +1,4 @@
-package com.popularmovies.Utilities;
+package com.popularmovies.Utilities.Adapters;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -10,11 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.popularmovies.R;
+import com.popularmovies.Utilities.Objects.Trailer;
 
 import java.util.List;
 

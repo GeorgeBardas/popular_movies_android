@@ -1,6 +1,5 @@
 package com.popularmovies;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -21,12 +20,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.popularmovies.Utilities.Movie;
-import com.popularmovies.Utilities.MovieDatabaseContentProvider;
-import com.popularmovies.Utilities.MovieDatabaseHelper;
-import com.popularmovies.Utilities.MovieTable;
-import com.popularmovies.Utilities.Trailer;
-import com.popularmovies.Utilities.TrailerAdapter;
+import com.popularmovies.Utilities.Objects.Movie;
+import com.popularmovies.Utilities.DB.MovieDatabaseContentProvider;
+import com.popularmovies.Utilities.DB.MovieTable;
+import com.popularmovies.Utilities.Objects.Trailer;
+import com.popularmovies.Utilities.Adapters.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -56,6 +54,7 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.movie_rating) TextView movieRating;
     @BindView(R.id.movie_plot) TextView moviePlot;
     @BindView(R.id.favorite_button) Button favorite;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     public boolean isUnique(){
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
@@ -66,15 +65,37 @@ public class DetailsActivity extends AppCompatActivity {
         return true;
     }
 
+    public Movie getMovieFromJSON(JSONObject response){
+        Movie movie = new Movie();
+
+        movie.setId(response.optInt("id"));
+        movie.setTitle(response.optString("title"));
+        movie.setImage_link(response.optString("poster_path"));
+        movie.setOverview(response.optString("overview"));
+        movie.setReleaseDate(response.optString("release_date"));
+        movie.setRating(String.valueOf(response.optDouble("vote_average")));
+
+        return movie;
+    }
+
+    public void updateUIWithMovie(Movie movie){
+        toolbar.setTitle(movie.getTitle());
+        movieTitle.setText(movie.getTitle());
+        movieReleaseDate.setText(movie.getReleaseDate());
+        movieRating.setText(movie.getRating());
+        moviePlot.setText(movie.getOverview());
+        Picasso.with(getApplicationContext())
+                .load(getString(R.string.base_path_small_poster) + movie.getImage_link()).error(R.drawable.ic_android)
+                .into(movieImage);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
-        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        movie = new Movie();
 
         final TrailerAdapter trailerAdapter = new TrailerAdapter(getApplicationContext(), R.layout.view_item_trailer, listTrailers);
         trailersListView.setAdapter(trailerAdapter);
@@ -92,18 +113,7 @@ public class DetailsActivity extends AppCompatActivity {
                 (Request.Method.GET, link, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        movie.setId(response.optInt("id"));
-                        movie.setTitle(response.optString("title"));
-                        movie.setImage_link(response.optString("poster_path"));
-                        movie.setOverview(response.optString("overview"));
-                        movie.setReleaseDate(response.optString("release_date"));
-                        movie.setRating(String.valueOf(response.optDouble("vote_average")));
-                        toolbar.setTitle(response.optString("title"));
-                        Picasso.with(getApplicationContext()).load(getString(R.string.base_path_small_poster) + response.optString("poster_path")).error(R.drawable.ic_android).into(movieImage);
-                        movieTitle.setText(response.optString("title"));
-                        movieReleaseDate.setText("Release date: " + response.optString("release_date"));
-                        movieRating.setText("Rating: " + String.valueOf(response.optDouble("vote_average")));
-                        moviePlot.setText(response.optString("overview"));
+                        updateUIWithMovie(getMovieFromJSON(response));
                     }
                 }, new Response.ErrorListener() {
                     @Override

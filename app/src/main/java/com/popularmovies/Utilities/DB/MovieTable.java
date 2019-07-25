@@ -1,4 +1,4 @@
-package com.popularmovies.Utilities;
+package com.popularmovies.Utilities.DB;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
