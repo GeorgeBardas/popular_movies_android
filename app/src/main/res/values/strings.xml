@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">PopularMovies</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_latest_movies">Latest</string>
+    <string name="title_popular_movies">Popular</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="api_key">7ec5bdc1c66ad738d9920a6df87170d6</string>
 </resources>
