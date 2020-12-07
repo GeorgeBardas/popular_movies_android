@@ -19,9 +19,12 @@ class PopularMoviesViewModel : ViewModel() {
     val moviesResponse = MutableLiveData<MutableList<Movie>>()
     val request = RetrofitClientInstance.buildService(TmdbService::class.java)
 
-    fun getPopularMovies(context: Context?) {
+    fun getPopularMovies(context: Context?, isPopular: Boolean) {
         context?.let {
-            val call = request.getRecentMovies(context.getString(R.string.api_key))
+            val call = when (isPopular){
+                true -> request.getPopularMovies(context.getString(R.string.api_key))
+                false -> request.getTopRatedMovies(context.getString(R.string.api_key))
+            }
 
             call.enqueue(object : Callback<GetMoviesResponse> {
                 override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>) {

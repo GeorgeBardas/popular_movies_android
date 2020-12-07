@@ -11,7 +11,7 @@ import com.georgebardas.popularmovies.model.Movie
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.random_movie_view.view.*
 
-class PopularMoviesAdapter : RecyclerView.Adapter<PopularMoviesViewHolder>() {
+class PopularMoviesAdapter(val onMovieClick: (movieId: String) -> Unit) : RecyclerView.Adapter<PopularMoviesViewHolder>() {
     var list: MutableList<Movie> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularMoviesViewHolder {
@@ -20,6 +20,9 @@ class PopularMoviesAdapter : RecyclerView.Adapter<PopularMoviesViewHolder>() {
 
     override fun onBindViewHolder(holder: PopularMoviesViewHolder, position: Int) {
         holder.bind(list[position])
+        holder.itemView.setOnClickListener {
+            onMovieClick(list[position].id.toString())
+        }
     }
 
     fun setItem(list: MutableList<Movie>) {

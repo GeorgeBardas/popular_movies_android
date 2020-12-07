@@ -8,8 +8,6 @@ import com.georgebardas.popularmovies.R
 import com.georgebardas.popularmovies.model.Movie
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.popular_movie_view.view.*
-import kotlinx.android.synthetic.main.random_movie_view.view.*
-import kotlinx.android.synthetic.main.random_movie_view.view.movie_poster
 
 class PopularMoviesViewHolder constructor(itemView: View) :
     RecyclerView.ViewHolder(itemView) {

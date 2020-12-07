@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.georgebardas.popularmovies.R
 import com.georgebardas.popularmovies.ui.recent.util.RandomMovieAdapter
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_latest_movies.*
 import java.lang.Math.abs
 
 class RecentMoviesFragment : Fragment() {
@@ -26,9 +26,8 @@ class RecentMoviesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-            ViewModelProvider(this).get(RecentMoviesViewModel::class.java)
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        homeViewModel =  ViewModelProvider(this).get(RecentMoviesViewModel::class.java)
+        return inflater.inflate(R.layout.fragment_latest_movies, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
